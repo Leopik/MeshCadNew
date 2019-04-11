@@ -18,8 +18,6 @@ namespace MeshCAD
 
         public double[,] Parse(string filePath)
         {
-            int NNSO = 2;
-            // max kol soedin uzlov}
             int nplat = 20;
             // max kol plat}
             int KST = 30;
@@ -29,33 +27,28 @@ namespace MeshCAD
             int mkuz = 30;
             // max kol uzlov v stoike}
 
-            double PI = 3.1462;
-            int NQL = 1;
-            int NW = 9;//диапазонов вибрации}
             int NKRE = 80;//МАКС узлов крепления}
             int NMA = 12;//макс сосред масс}
             int UZL = 400;//макс узлов}
             int NKON = 10;//макс контрольных узлов}
-            int NUD = 6;//макс точек уд имп и после}
+
             int NNPR = 400;//МАКС колич прямоугольников}
             int NNTR = 8;//макс колич треуг}
             int NTPL = 200;//макс колич типов плоских эл}
             int NXST = 5;//макс колич типов стержней}
             int NNST = 50;//макс колич стержней}
 
-            int NPLASF, NPLASR, NUZ, NP1, NNNA, NE, NPR, NTS, NST, NTR, NK, IP, IC, IL, IPPP, JP, J1, J2;
-            int npv, nng, NAPR, TR, NBL, IZ, IJ, JL, JK, JN, JPPP, NK1, IFO;
-            int NET, nsto, nste, nns, nnx, nkx, nny, nky, nnz, nkz, nx, ny, nz;
-            int ntip, WWIB, WUD, JJ, NSM, ND, KMN, KF, L1, LL, MN, ERRO, NGW, NKT;
-            int nprr, nv, ng, nlv, nvg, nob, NPU, ii1, NUR, N, NN, NTP, NKR, NDIP, NGI, NGJ, K;
+            int NPLASF, NPLASR, NUZ,  NE, NPR, NTS, NST, NTR;
+            int npv, nng, NK1;
+            int NET, nsto,  nnx, nkx, nny, nky, nnz, nkz, nx, ny, nz;
+            int ntip, NSM, ND,  MN;
+            int nprr, nv, ng, nlv, nvg, nob, NPU, NN, NKR;
             nob = 0;
             NE = 0;
-            double DISP, PEX, PEY, PEZ, PER, me, AA, DF, F1, FK, FN, S1, S2, S3, W;
-            double ss, sx;
-            double sigma, kz, mob, sy, sz, dw, dt, LPER;
-            int nupt, kolpr, NTMPL, nnn, ktip, IJ1, tnsg, nsg, m, p, g1, g2, g3, g4;
-            double s, g;
-            int nomel, nomuz, flag, tipr, nras, kolb, ntipr;
+            double  sx;
+            double  kz, mob, sy, sz;
+            int nupt, kolpr, NTMPL,  ktip;
+            int nomel, nomuz;
             ktip = 0;
             nsto = 0;
             kolpr = 0;
