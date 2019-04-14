@@ -1,4 +1,5 @@
 ﻿using HelixToolkit.Wpf;
+using MeshCAD.UIModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,8 +25,9 @@ namespace MeshCAD
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public const float EPS = 0.01f;
-        double GetAngleABC(Point3D a, Point3D b, Point3D c)
+        private double GetAngleABC(Point3D a, Point3D b, Point3D c)
         {
             double[] ab = { b.X - a.X, b.Y - a.Y, b.Z - a.Z };
             double[] bc = { c.X - b.X, c.Y - b.Y, c.Z - b.Z };
@@ -41,62 +43,36 @@ namespace MeshCAD
             return Math.Acos(res) * 180.0 / Math.PI;
         }
 
-
         public MainWindow()
         {
             InitializeComponent();
+
+            var lights = new DefaultLights();
+            ViewPort.Children.Add(lights);
 
             DarParser.Model model;
             using (StreamReader modelFile = new StreamReader(@"E:\Downloads\Chrome\pros_plat.dar"))
                 model = new DarParser().Parse(modelFile);
 
-            var hVp3D = new HelixViewport3D();
-            var lights = new DefaultLights();
-            foreach(var point in model.Vertices)
+            foreach (var point in model.Vertices)
             {
-                var sphere = new SphereVisual3D();
-                sphere.Radius = 1 / 500f;
-                sphere.Transform = new TranslateTransform3D(point.X, point.Y, point.Z);
-                hVp3D.Children.Add(sphere);
+                var vertex = new VertexUI(point);
+                vertex.MouseDown += new MouseButtonEventHandler((obj, args) => 
+                {
+                    InfoBlock.Text = vertex.ToString();
+                });
+                ViewPort.Children.Add(vertex);
             }
-
             foreach (var rectangle in model.Rectangles)
             {
-                var rect = new RectangleVisual3D();
-                rect.Origin = rectangle.Vertices[0].ToPoint3D();
-                double angle = GetAngleABC(rectangle.Vertices[0].ToPoint3D(), rectangle.Vertices[1].ToPoint3D(), rectangle.Vertices[2].ToPoint3D());
-                if ((90 - EPS<angle) && (angle<90 + EPS))
-                {
-                    //Vertice[0] and Vertice[2] - diagonal
-                    rect.LengthDirection = new Vector3D(rectangle.Vertices[0].X - rectangle.Vertices[1].X,
-                        rectangle.Vertices[0].Y - rectangle.Vertices[1].Y,
-                        rectangle.Vertices[0].Z - rectangle.Vertices[1].Z);
-
-                    rect.Normal = new Vector3D(rectangle.Vertices[0].X - rectangle.Vertices[3].X,
-                        rectangle.Vertices[0].Y - rectangle.Vertices[3].Y,
-                        rectangle.Vertices[0].Z - rectangle.Vertices[3].Z);
-
-                    rect.Width = rectangle.Vertices[0].ToPoint3D().DistanceTo(rectangle.Vertices[3].ToPoint3D());
-                    rect.Length = rectangle.Vertices[0].ToPoint3D().DistanceTo(rectangle.Vertices[1].ToPoint3D());
-                } else
-                {
-                    //Vertice[1] and Vertice[2] - diagonal
-                    rect.LengthDirection = new Vector3D(rectangle.Vertices[0].X - rectangle.Vertices[1].X,
-    rectangle.Vertices[0].Y - rectangle.Vertices[1].Y,
-    rectangle.Vertices[0].Z - rectangle.Vertices[1].Z);
-
-                    rect.Normal = new Vector3D(rectangle.Vertices[0].X - rectangle.Vertices[2].X,
-                        rectangle.Vertices[0].Y - rectangle.Vertices[2].Y,
-                        rectangle.Vertices[0].Z - rectangle.Vertices[2].Z);
-
-                    rect.Width = rectangle.Vertices[0].ToPoint3D().DistanceTo(rectangle.Vertices[2].ToPoint3D());
-                    rect.Length = rectangle.Vertices[0].ToPoint3D().DistanceTo(rectangle.Vertices[1].ToPoint3D());
-                }
-                hVp3D.Children.Add(rect);
+                var rectUI = new RectangleUI(rectangle);
+                
+                rectUI.MouseDown += new MouseButtonEventHandler((obj, args) =>
+                 {
+                     InfoBlock.Text = rectUI.ToString();
+                 });
+                ViewPort.Children.Add(rectUI);
             }
-
-            hVp3D.Children.Add(lights);
-            AddChild(hVp3D);
 
             //var coor = new NewParser().Parse(@"E:\Dropbox\учебахуеба\диплом\progi\его прога\pros_pl1.dat");
 
@@ -115,5 +91,6 @@ namespace MeshCAD
             //using (StreamReader modelFile = new StreamReader(@"E:\Dropbox\учебахуеба\диплом\progi\его прога\pros_pl1.dat"))
             //    new DatParser().Parse(modelFile);
         }
+
     }
 }

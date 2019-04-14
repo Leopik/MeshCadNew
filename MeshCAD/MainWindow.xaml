@@ -7,5 +7,25 @@
         xmlns:local="clr-namespace:MeshCAD"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    
+    <Window.Resources>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.61*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <HelixToolkit:HelixViewport3D 
+            x:Name="ViewPort" 
+            ZoomExtentsWhenLoaded="True" 
+            Background="LightGray" 
+            IsHeadLightEnabled="True" 
+            ZoomAroundMouseDownPoint="True" 
+            RotateAroundMouseDownPoint="True" Grid.ColumnSpan="2" Margin="10,10,151.333,9.667">
+
+            <!--<HelixToolkit:BoundingBoxVisual3D BoundingBox="{Binding SelectedObject, Converter={StaticResource BoundsConverter}}" Diameter="0.2"/>-->
+        </HelixToolkit:HelixViewport3D>
+        <TextBlock x:Name="InfoBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="157.667,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="401" Width="136"/>
+
+    </Grid>
+
 </Window>

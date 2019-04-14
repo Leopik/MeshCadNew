@@ -15,21 +15,27 @@ namespace MeshCAD
 
         public struct Vertex {
 
-            public double X, Y, Z;
-            int Type, Belongs;
+            public Point3D Point { get; private set; }
+            public int Type, Belongs;
+            public int Number;
 
-            public Vertex(double x, double y, double z, int type, int belongs)
+            public Vertex(int number, double x, double y, double z, int type, int belongs)
             {
-                X = x;
-                Y = y;
-                Z = z;
+                Number = number;
+                Point = new Point3D(x, y, z);
                 Type = type;
                 Belongs = belongs;
             }
 
-            public Point3D ToPoint3D()
+            public override string ToString()
             {
-                return new Point3D(X, Y, Z);
+                return $"Координаты:\n" +
+                    $"X: {Point.X}\n" +
+                    $"Y: {Point.Y}\n" +
+                    $"Z: {Point.Z}\n" +
+                    $"Номер: {Number}\n" +
+                    $"Тип: {Type}\n" +
+                    $"Принадлежность узла: {Belongs}\n";
             }
         }
 
@@ -47,6 +53,17 @@ namespace MeshCAD
                 Type = type;
                 FixPlateNumber = fixPlateNumber;
                 BoardNumber = boardNumber;
+            }
+
+            public override string ToString()
+            {
+                return $"Координаты:\n" +
+                    $"Первая точка: {Vertices[0].Number}\n" +
+                    $"Вторая точка: {Vertices[1].Number}\n" +
+                    $"Третья точка: {Vertices[2].Number}\n" +
+                    $"Четвертая точка: {Vertices[3].Number}\n" +
+                    $"Номер: {Number}\n" +
+                    $"Тип: {Type}\n";
             }
         }
 
@@ -105,9 +122,11 @@ namespace MeshCAD
             List<Vertex> coords = new List<Vertex>(coordSize);
             for (int i = 0; i < coordSize; i++)
             {
-                modelFile.ReadLine();
+                string coordNumberStr = modelFile.ReadLine();
+                int coordNumber = int.Parse(coordNumberStr.Substring(coordNumberStr.LastIndexOf(' ')));
                 var coordsStr = Regex.Replace(modelFile.ReadLine().Trim(), @"\s+", " ").Split(' ');
-                coords.Add(new Vertex(double.Parse(coordsStr[0], CultureInfo.InvariantCulture),
+                coords.Add(new Vertex(coordNumber,
+                    double.Parse(coordsStr[0], CultureInfo.InvariantCulture),
                     double.Parse(coordsStr[1], CultureInfo.InvariantCulture),
                     double.Parse(coordsStr[2], CultureInfo.InvariantCulture),
                     (int) double.Parse(coordsStr[2], CultureInfo.InvariantCulture),
