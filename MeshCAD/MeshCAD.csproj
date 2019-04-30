@@ -61,6 +61,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Elements\BaseElement.cs" />
+    <Compile Include="Elements\Rectangle.cs" />
+    <Compile Include="Elements\Rod.cs" />
+    <Compile Include="Elements\Triangle.cs" />
+    <Compile Include="Elements\Vertex.cs" />
+    <Compile Include="UIModels\BaseUIElement.cs" />
     <Compile Include="UIModels\RectangleUI.cs" />
     <Compile Include="UIModels\VertexUI.cs" />
     <Page Include="MainWindow.xaml">
@@ -72,14 +78,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DarParser.cs" />
-    <Compile Include="DatParser.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model.cs" />
     <Compile Include="NewParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -107,5 +111,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

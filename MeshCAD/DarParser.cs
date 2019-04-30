@@ -57,7 +57,7 @@ namespace MeshCAD
 
             public override string ToString()
             {
-                return $"Координаты:\n" +
+                return 
                     $"Первая точка: {Vertices[0].Number}\n" +
                     $"Вторая точка: {Vertices[1].Number}\n" +
                     $"Третья точка: {Vertices[2].Number}\n" +
@@ -212,6 +212,38 @@ namespace MeshCAD
                     )
                     );
             }
+
+            //read LKR array
+            modelFile.ReadLine();
+            var LKRSizeStr = modelFile.ReadLine();
+            int LKRSize = int.Parse(LKRSizeStr
+                .Substring(LKRSizeStr
+                .LastIndexOf('=') + 1));
+            var LKRVertexNumbers = Regex.Replace(modelFile.ReadLine().Trim(), @"\s+", " ").Split(' ').Select(x => int.Parse(x));
+
+            //read LSM array
+            modelFile.ReadLine();
+            var LSMSizeStr = modelFile.ReadLine();
+            int LSMSize = int.Parse(LSMSizeStr
+                .Substring(LSMSizeStr
+                .LastIndexOf('=') + 1));
+            var LSMVertexNumbers = Regex.Replace(modelFile.ReadLine().Trim(), @"\s+", " ").Split(' ').Select(x => int.Parse(x));
+
+            //read MSM array
+            modelFile.ReadLine();
+            var MSMSizeStr = modelFile.ReadLine();
+            int MSMSize = int.Parse(MSMSizeStr
+                .Substring(MSMSizeStr
+                .LastIndexOf('=') + 1));
+            var MSMVertexValues = Regex.Replace(modelFile.ReadLine().Trim(), @"\s+", " ").Split(' ').Select(x => double.Parse(x, CultureInfo.InvariantCulture));
+
+            //read NUK array
+            modelFile.ReadLine();
+            var NUKSizeStr = modelFile.ReadLine();
+            int NUKSize = int.Parse(NUKSizeStr
+                .Substring(NUKSizeStr
+                .LastIndexOf('=') + 1));
+            var NUKVertexNumbers = Regex.Replace(modelFile.ReadLine().Trim(), @"\s+", " ").Split(' ').Select(x => int.Parse(x));
             return new Model(coords, triangles, rectangles, rods);
         }
 

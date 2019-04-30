@@ -8,9 +8,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 
-namespace MeshCAD
+namespace MeshCAD.UIModels
 {
-    class RectangleUI : UIElement3D
+    class RectangleUI : BaseUIElement
     {
         public const float EPS = 0.01f;
         private double GetAngleABC(Point3D a, Point3D b, Point3D c)
@@ -62,6 +62,8 @@ namespace MeshCAD
             rect.Width = basePoint.DistanceTo(widthPoint);
             rect.Length = basePoint.DistanceTo(lengthPoint);
             Visual3DModel = rect.Model;
+
+            Title = "Прямоугольник №" + rectangle.Number;
             
         }
 

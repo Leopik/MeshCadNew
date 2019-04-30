@@ -10,9 +10,6 @@ namespace MeshCAD
 {
     class NewParser
     {
-        struct ModelFirst {
-
-        }
 
         public double sqr(double x) => Math.Pow(x, 2);
 

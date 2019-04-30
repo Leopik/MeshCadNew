@@ -4,27 +4,63 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
-        xmlns:local="clr-namespace:MeshCAD"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+        xmlns:local="clr-namespace:MeshCAD.UIModels"
+        xmlns:trlocal="clr-namespace:MeshCAD"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
+        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+                        ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="trlocal:ClickMode"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1.61*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <!--<StackPanel Height="401" VerticalAlignment="Top" Grid.Column="1" >-->
+        <DockPanel LastChildFill="True" Grid.Column="1">
+            <Button DockPanel.Dock="Top" Content="Открыть файл" Click="Button_Click" Height="24"/>
+            <ComboBox DockPanel.Dock="Top"
+                      ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+                  SelectedItem="{Binding Path=CurrentSelectMode}" />
+            <Label DockPanel.Dock="Top" Content="Информация:" VerticalAlignment="Top" Height="26"/>
+            <StackPanel DockPanel.Dock="Top"  Orientation="Horizontal">
+                <CheckBox Content="Показывать" IsChecked="{Binding CurrentChosenElement.IsShown}"/>
+                <Button Content="Подсветить" Width="75" Click="HighlightElementClick"/>
+            </StackPanel>
+            <TextBlock DockPanel.Dock="Top" x:Name="InfoBlock" TextWrapping="Wrap" Height="149" Text="{Binding CurrentChosenElement, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button DockPanel.Dock="Top" Content="Поиск элемента" Height="26"/>
+            <Label DockPanel.Dock="Top" Content="Структура" Height="25"/>
+            <TreeView DockPanel.Dock="Bottom" x:Name="StructureTree">
+                <TreeView.Resources>
+                    <DataTemplate DataType="{x:Type local:BaseUIElement}">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="{Binding Title}" Click="StructureElementClick"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </TreeView.Resources>
+                <TreeViewItem x:Name="RectangleTree"  Header="Прямоугольники" />
+                <TreeViewItem x:Name="VertexTree" Header="Вершины" />
+            </TreeView>
+        </DockPanel>
+        <!--</StackPanel>-->
         <HelixToolkit:HelixViewport3D 
+            Grid.Column="0" 
             x:Name="ViewPort" 
             ZoomExtentsWhenLoaded="True" 
             Background="LightGray" 
             IsHeadLightEnabled="True" 
             ZoomAroundMouseDownPoint="True" 
-            RotateAroundMouseDownPoint="True" Grid.ColumnSpan="2" Margin="10,10,151.333,9.667">
+            RotateAroundMouseDownPoint="True">
 
             <!--<HelixToolkit:BoundingBoxVisual3D BoundingBox="{Binding SelectedObject, Converter={StaticResource BoundsConverter}}" Diameter="0.2"/>-->
         </HelixToolkit:HelixViewport3D>
-        <TextBlock x:Name="InfoBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="157.667,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="401" Width="136"/>
 
     </Grid>
 
