@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeshCAD.Elements;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -12,106 +13,6 @@ namespace MeshCAD
 {
     public class DarParser
     {
-
-        public struct Vertex {
-
-            public Point3D Point { get; private set; }
-            public int Type, Belongs;
-            public int Number;
-
-            public Vertex(int number, double x, double y, double z, int type, int belongs)
-            {
-                Number = number;
-                Point = new Point3D(x, y, z);
-                Type = type;
-                Belongs = belongs;
-            }
-
-            public override string ToString()
-            {
-                return $"Координаты:\n" +
-                    $"X: {Point.X}\n" +
-                    $"Y: {Point.Y}\n" +
-                    $"Z: {Point.Z}\n" +
-                    $"Номер: {Number}\n" +
-                    $"Тип: {Type}\n" +
-                    $"Принадлежность узла: {Belongs}\n";
-            }
-        }
-
-        public struct Rectangle {
-            public int Number;
-            public Vertex[] Vertices;
-            public int Type;
-            public int FixPlateNumber;
-            public int BoardNumber;
-
-            public Rectangle(int number, Vertex[] vertices, int type, int fixPlateNumber, int boardNumber)
-            {
-                Number = number;
-                Vertices = vertices;
-                Type = type;
-                FixPlateNumber = fixPlateNumber;
-                BoardNumber = boardNumber;
-            }
-
-            public override string ToString()
-            {
-                return 
-                    $"Первая точка: {Vertices[0].Number}\n" +
-                    $"Вторая точка: {Vertices[1].Number}\n" +
-                    $"Третья точка: {Vertices[2].Number}\n" +
-                    $"Четвертая точка: {Vertices[3].Number}\n" +
-                    $"Номер: {Number}\n" +
-                    $"Тип: {Type}\n";
-            }
-        }
-
-        public struct Triangle
-        {
-            public int Number, Type, FixPlateNumber, BoardNumber;
-            public Vertex[] Vertices;
-
-            public Triangle(int number, Vertex[] vertices, int type, int fixPlateNumber, int boardNumber)
-            {
-                Number = number;
-                Type = type;
-                FixPlateNumber = fixPlateNumber;
-                BoardNumber = boardNumber;
-                Vertices = vertices;
-            }
-        }
-
-        public struct Rod
-        {
-            public int Number, Type;
-            public Vertex[] Vertices;
-            public Vertex OrientationVertice;
-
-            public Rod(int number, Vertex[] vertices, Vertex orientationVertice, int type)
-            {
-                Number = number;
-                Type = type;
-                Vertices = vertices;
-                OrientationVertice = orientationVertice;
-            }
-        }
-
-        public struct Model
-        {
-            public List<Vertex> Vertices;
-            public List<Triangle> Triangles;
-            public List<Rectangle> Rectangles;
-            public List<Rod> Rods;
-
-            public Model(List<Vertex> vertices, List<Triangle> triangles, List<Rectangle> rectangles, List<Rod> rods)
-            {
-                Vertices = vertices;
-                Triangles = triangles;
-                Rectangles = rectangles;
-                Rods = rods;
-            }
-        }
 
         public Model Parse(StreamReader modelFile)
         {

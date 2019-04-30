@@ -62,6 +62,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Elements\BaseElement.cs" />
+    <Compile Include="Elements\MassVertex.cs" />
+    <Compile Include="Elements\Model.cs" />
     <Compile Include="Elements\Rectangle.cs" />
     <Compile Include="Elements\Rod.cs" />
     <Compile Include="Elements\Triangle.cs" />

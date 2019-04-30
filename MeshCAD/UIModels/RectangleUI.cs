@@ -1,4 +1,5 @@
 ﻿using HelixToolkit.Wpf;
+using MeshCAD.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +30,8 @@ namespace MeshCAD.UIModels
             return Math.Acos(res) * 180.0 / Math.PI;
         }
 
-        DarParser.Rectangle Rectangle;
-        public RectangleUI(DarParser.Rectangle rectangle)
+        Rectangle Rectangle;
+        public RectangleUI(Rectangle rectangle)
         {
             Rectangle = rectangle;
             var rect = new RectangleVisual3D();

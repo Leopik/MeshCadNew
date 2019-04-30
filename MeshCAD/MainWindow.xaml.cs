@@ -1,4 +1,5 @@
 ﻿using HelixToolkit.Wpf;
+using MeshCAD.Elements;
 using MeshCAD.UIModels;
 using System;
 using System.Collections.Generic;
@@ -50,7 +51,7 @@ namespace MeshCAD
             InitializeComponent();
 
             this.DataContext = this;
-            DarParser.Model model;
+            Model model;
             using (StreamReader modelFile = new StreamReader(@"pros_plat.dar"))
                 model = new DarParser().Parse(modelFile);
             DrawModel(model);

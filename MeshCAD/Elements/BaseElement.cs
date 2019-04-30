@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MeshCAD.Elements
 {
-    class BaseElement
+    public class BaseElement
     {
     }
 }
