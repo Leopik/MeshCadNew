@@ -8,12 +8,12 @@ namespace MeshCAD.Elements
 {
     public class Model
     {
-        public List<Vertex> Vertices;
-        public List<Triangle> Triangles;
-        public List<Rectangle> Rectangles;
-        public List<Rod> Rods;
+        public Dictionary<int, Vertex> Vertices;
+        public Dictionary<int, Triangle> Triangles;
+        public Dictionary<int, Rectangle> Rectangles;
+        public Dictionary<int, Rod> Rods;
 
-        public Model(List<Vertex> vertices, List<Triangle> triangles, List<Rectangle> rectangles, List<Rod> rods)
+        public Model(Dictionary<int, Vertex> vertices, Dictionary<int, Triangle> triangles, Dictionary<int, Rectangle> rectangles, Dictionary<int, Rod> rods)
         {
             Vertices = vertices;
             Triangles = triangles;

@@ -1,12 +1,16 @@
 ﻿using HelixToolkit.Wpf;
+using MeshCAD.Configs;
 using MeshCAD.Elements;
+using MeshCAD.Properties;
 using MeshCAD.UIModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,7 +32,7 @@ namespace MeshCAD
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-
+        private Material SelectMaterial = MaterialHelper.CreateImageMaterial(@"E:\Downloads\Chrome\Excel.png");
         public const float EPS = 0.01f;
         private double GetAngleABC(Point3D a, Point3D b, Point3D c)
         {
@@ -69,27 +73,56 @@ namespace MeshCAD
             //}
             //hVp3D.Children.Add(lights);
             //AddChild(hVp3D);
-
-            //using (StreamReader modelFile = new StreamReader(@"E:\Dropbox\учебахуеба\диплом\progi\его прога\pros_pl1.dat"))
-            //    new DatParser().Parse(modelFile);
         }
-
+        public ModelUI ModelUI;
         private void DrawModel(Model model)
         {
+            ModelUI = new ModelUI(model,
+                new MouseButtonEventHandler((obj, args) =>
+                {
+                    if (args.ChangedButton == MouseButton.Left) ShowElementControls((BaseUIElement)obj);
+                }));
             foreach (var point in model.Vertices)
             {
-                var vertex = new VertexUI(point);
-                vertex.MouseDown += new MouseButtonEventHandler((obj, args) => { if (args.ChangedButton == MouseButton.Left) ShowElementControls(vertex); });
+                var vertex = new VertexUI(point.Value);
+                vertex.MouseDown += new MouseButtonEventHandler((obj, args) => {
+                    if (args.ChangedButton == MouseButton.Left) ShowElementControls((BaseUIElement)obj); });
                 ViewPort.Children.Add(vertex);
                 VertexTree.Items.Add(vertex);
             }
             foreach (var rectangle in model.Rectangles)
             {
-                var rectUI = new RectangleUI(rectangle);
+                try
+                {
+                    var rectUI = new RectangleUI(rectangle.Value);
+               
+                    rectUI.MouseDown += new MouseButtonEventHandler((obj, args) => { if (args.ChangedButton == MouseButton.Left) ShowElementControls(rectUI); });
+                    ViewPort.Children.Add(rectUI);
+                    RectangleTree.Items.Add(rectUI);
+                }
+                catch (Exception e)
+                {
+                    MessageBoxResult result = MessageBox.Show(e.Message,
+                                          "Ошибка",
+                                          MessageBoxButton.OK,
+                                          MessageBoxImage.Error);
+                    
+                }
+            }
+            foreach (var triangle in model.Triangles)
+            {
+                var triangleUi = new TriangleUI(triangle.Value);
+                triangleUi.MouseDown += new MouseButtonEventHandler((obj, args) => { if (args.ChangedButton == MouseButton.Left) ShowElementControls(triangleUi); });
+                ViewPort.Children.Add(triangleUi);
+                TriangleTree.Items.Add(triangleUi);
 
-                rectUI.MouseDown += new MouseButtonEventHandler((obj, args) => { if (args.ChangedButton == MouseButton.Left) ShowElementControls(rectUI); });
-                ViewPort.Children.Add(rectUI);
-                RectangleTree.Items.Add(rectUI);
+            }
+            foreach (var rod in model.Rods)
+            {
+                var rodUi = new RodUI(rod.Value);
+                rodUi.MouseDown += new MouseButtonEventHandler((obj, args) => { if (args.ChangedButton == MouseButton.Left) ShowElementControls(rodUi); });
+                ViewPort.Children.Add(rodUi);
+                RodTree.Items.Add(rodUi);
             }
         }
         private BaseUIElement currentChosenElement;
@@ -124,12 +157,23 @@ namespace MeshCAD
 
         private void ShowElementControls(BaseUIElement element)
         {
-            //if (element == null)
-            //    return;
+
+            if (CurrentChosenElement != null)
+            {
+                CurrentChosenElement.Material = CurrentChosenElement.BaseMaterial;
+            }
+
             CurrentChosenElement = element;
-            if (currentSelectMode == ClickMode.HideMode)
-                CurrentChosenElement.IsShown = false;
-            //InfoBlock.Text = element.ToString();
+
+            switch (currentSelectMode)
+            {
+                case ClickMode.HideMode:
+                    CurrentChosenElement.IsShown = false;
+                    break;
+                case ClickMode.SelectMode:
+                    CurrentChosenElement.Material = SelectMaterial;
+                    break;
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -192,7 +236,35 @@ namespace MeshCAD
         {
             if (CurrentChosenElement == null)
                 return;
-            ViewPort.LookAt(CurrentChosenElement.FindBounds(CurrentChosenElement.Transform).Location, 0.4, 100);
+            ViewPort.LookAt(CurrentChosenElement.FindBounds(CurrentChosenElement.Transform).Location, 1, 1000);
+        }
+
+        //allow only numbers into search box
+        private static bool IsTextAllowed(string text)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            return !regex.IsMatch(text);
+        }
+ 
+        private void SearchNumberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextAllowed(e.Text);
+        }
+
+        private void SearchNumberTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(typeof(String)))
+            {
+                String text = (String)e.DataObject.GetData(typeof(String));
+                if (!IsTextAllowed(text))
+                {
+                    e.CancelCommand();
+                }
+            }
+            else
+            {
+                e.CancelCommand();
+            }
         }
     }
     public enum ClickMode

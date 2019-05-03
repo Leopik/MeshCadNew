@@ -28,25 +28,65 @@
             <Button DockPanel.Dock="Top" Content="Открыть файл" Click="Button_Click" Height="24"/>
             <ComboBox DockPanel.Dock="Top"
                       ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
-                  SelectedItem="{Binding Path=CurrentSelectMode}" />
+                  SelectedItem="{Binding CurrentSelectMode}" />
             <Label DockPanel.Dock="Top" Content="Информация:" VerticalAlignment="Top" Height="26"/>
-            <StackPanel DockPanel.Dock="Top"  Orientation="Horizontal">
+            <WrapPanel DockPanel.Dock="Top"  Orientation="Horizontal">
                 <CheckBox Content="Показывать" IsChecked="{Binding CurrentChosenElement.IsShown}"/>
                 <Button Content="Подсветить" Width="75" Click="HighlightElementClick"/>
-            </StackPanel>
-            <TextBlock DockPanel.Dock="Top" x:Name="InfoBlock" TextWrapping="Wrap" Height="149" Text="{Binding CurrentChosenElement, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button DockPanel.Dock="Top" Content="Поиск элемента" Height="26"/>
+            </WrapPanel>
+            <TextBlock DockPanel.Dock="Top" x:Name="InfoBlock" TextWrapping="Wrap" Height="149" Text="{Binding CurrentChosenElement.ModelElement, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label DockPanel.Dock="Top" Content="Поиск элемента" Height="25"/>
+            <WrapPanel DockPanel.Dock="Top"  Orientation="Horizontal">
+                <ComboBox />
+                <TextBox x:Name="SearchNumberTextBox" Text="TextBox" PreviewTextInput="SearchNumberTextBox_PreviewTextInput" DataObject.Pasting="SearchNumberTextBox_Pasting"/>
+                <Button Content="Поиск" Width="75"/>
+            </WrapPanel>
             <Label DockPanel.Dock="Top" Content="Структура" Height="25"/>
             <TreeView DockPanel.Dock="Bottom" x:Name="StructureTree">
+
                 <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type trlocal:GroupTreeViewItem}">
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox  />
+                            <Label Content="{Binding Title}"/>
+                        </StackPanel> 
+                    </HierarchicalDataTemplate>
                     <DataTemplate DataType="{x:Type local:BaseUIElement}">
                         <StackPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding IsShown}" />
                             <Button Content="{Binding Title}" Click="StructureElementClick"/>
                         </StackPanel>
                     </DataTemplate>
                 </TreeView.Resources>
+                <!--<TreeView.Resources>
+                    <DataTemplate DataType="{x:Type local:BaseUIElement}">
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding IsShown}" />
+                            <Button Content="{Binding Title}" Click="StructureElementClick"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </TreeView.Resources>-->
+                <!--<TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Path=Phones}">
+                        <StackPanel>
+                        <CheckBox />
+                        <TextBlock Text="{Binding Name}" />
+                        </StackPanel>
+                        <HierarchicalDataTemplate.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:BaseUIElement}">
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsShown}" />
+                                    <Button Content="{Binding Title}" Click="StructureElementClick"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </HierarchicalDataTemplate.ItemTemplate>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>-->
+                <trlocal:GroupTreeViewItem Title="treet"/>
                 <TreeViewItem x:Name="RectangleTree"  Header="Прямоугольники" />
-                <TreeViewItem x:Name="VertexTree" Header="Вершины" />
+                <TreeViewItem x:Name="VertexTree" Header="Узлы" />
+                <TreeViewItem x:Name="TriangleTree" Header="Треугольники" />
+                <TreeViewItem x:Name="RodTree" Header="Стержни" />
             </TreeView>
         </DockPanel>
         <!--</StackPanel>-->

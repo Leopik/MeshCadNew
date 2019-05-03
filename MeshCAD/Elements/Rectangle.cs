@@ -6,13 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeshCAD.Elements
 {
-    public class Rectangle : BaseElement
+    public class Rectangle : BelongingElement
     {
-        public int Number;
         public Vertex[] Vertices;
-        public int Type;
-        public int FixPlateNumber;
-        public int BoardNumber;
 
         public Rectangle(int number, Vertex[] vertices, int type, int fixPlateNumber, int boardNumber)
         {
@@ -26,12 +22,15 @@ namespace MeshCAD.Elements
         public override string ToString()
         {
             return
-                $"Первая точка: {Vertices[0].Number}\n" +
-                $"Вторая точка: {Vertices[1].Number}\n" +
-                $"Третья точка: {Vertices[2].Number}\n" +
-                $"Четвертая точка: {Vertices[3].Number}\n" +
-                $"Номер: {Number}\n" +
-                $"Тип: {Type}\n";
+                $"Первый узел: №{Vertices[0].Number}\n" +
+                $"Второй узел: №{Vertices[1].Number}\n" +
+                $"Третий узел: №{Vertices[2].Number}\n" +
+                $"Четвертый узел: №{Vertices[3].Number}\n" +
+                $"Номер прямоугольника: {Number}\n" +
+                $"Тип: {Type}\n" +
+                (IsLonely ? "Отдельный прямоугольник\n" : "") +
+                $"№ пластины с фиксированным шагом сетки: {FixPlateNumber}\n" +
+                $"№ платы или пластины с равномерным шагом сетки: {BoardNumber}\n";
         }
     }
 }

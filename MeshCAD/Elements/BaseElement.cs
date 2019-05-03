@@ -8,5 +8,6 @@ namespace MeshCAD.Elements
 {
     public class BaseElement
     {
+        public int Number, Type;
     }
 }

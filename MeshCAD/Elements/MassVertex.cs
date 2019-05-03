@@ -13,5 +13,10 @@ namespace MeshCAD.Elements
         {
             Mass = mass;
         }
+
+        public override string ToString()
+        {
+            return base.ToString() + $"Значение массы: {Mass} кг\n";
+        }
     }
 }

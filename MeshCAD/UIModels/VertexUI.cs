@@ -13,36 +13,42 @@ using static MeshCAD.DarParser;
 
 namespace MeshCAD.UIModels
 {
-    class VertexUI : BaseUIElement
+    public class VertexUI : BaseUIElement
     {
+        private Material DefaultVertexMaterial = MaterialHelper.CreateMaterial(Brushes.Red);
+        private Material BindVertexMaterial = MaterialHelper.CreateMaterial(Brushes.Yellow);
+        private Material ControlVertexMaterial = MaterialHelper.CreateMaterial(Brushes.Green);
+        private Material MassVertexMaterial = MaterialHelper.CreateMaterial(Brushes.Violet);
+
         public Vertex Vertex;
         public VertexUI(Vertex vertex)
         {
+            ModelElement = vertex;
             Vertex = vertex;
             var sphere = new SphereVisual3D();
-            sphere.Radius = 1 / 1000f;
+
             sphere.Model.Material = MaterialHelper.CreateMaterial(Color.FromRgb(255, 0, 0));
-            Visual3DModel = sphere.Model;
-            
-            Transform = new TranslateTransform3D(vertex.Point.X, vertex.Point.Y, vertex.Point.Z);
+            sphere.Center = vertex.Point.Multiply(SCALE_FACTOR);
+
+            VisualElement = sphere;
+
+            switch(vertex.Type)
+            {
+                case 0:
+                    BaseMaterial = DefaultVertexMaterial;
+                    break;
+                case 1:
+                    BaseMaterial = BindVertexMaterial;
+                    break;
+                case 2:
+                    BaseMaterial = ControlVertexMaterial;
+                    break;
+                case 3:
+                    BaseMaterial = MassVertexMaterial;
+                    break;
+            }
 
             Title = "Узел №" + vertex.Number;
         }
-
-        public override string ToString()
-        {
-            return Vertex.ToString();
-        }
-
-
-
-        //protected override void OnMouseDown(MouseButtonEventArgs e)
-        //{
-        //    base.OnMouseDown(e);
-        //    MessageBoxResult result = MessageBox.Show($"X {Vertex.Point.X} Y {Vertex.Point.Y} Z {Vertex.Point.Z}",
-        //                                  "Confirmation",
-        //                                  MessageBoxButton.YesNo,
-        //                                  MessageBoxImage.Question);
-        //}
     }
 }

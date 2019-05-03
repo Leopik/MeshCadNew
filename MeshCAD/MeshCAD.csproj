@@ -42,7 +42,9 @@
       <HintPath>..\packages\HelixToolkit.Wpf.2.5.1\lib\net45\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -61,16 +63,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Configs\BoardConfig.cs" />
+    <Compile Include="Configs\BoardConfigList.cs" />
     <Compile Include="Elements\BaseElement.cs" />
+    <Compile Include="Elements\BelongingElement.cs" />
     <Compile Include="Elements\MassVertex.cs" />
     <Compile Include="Elements\Model.cs" />
     <Compile Include="Elements\Rectangle.cs" />
     <Compile Include="Elements\Rod.cs" />
     <Compile Include="Elements\Triangle.cs" />
     <Compile Include="Elements\Vertex.cs" />
+    <Compile Include="GroupTreeViewItem.cs" />
     <Compile Include="UIModels\BaseUIElement.cs" />
+    <Compile Include="UIModels\BelongingUIElement.cs" />
+    <Compile Include="UIModels\ModelUI.cs" />
     <Compile Include="UIModels\RectangleUI.cs" />
+    <Compile Include="UIModels\RodUI.cs" />
+    <Compile Include="UIModels\TriangleUI.cs" />
     <Compile Include="UIModels\VertexUI.cs" />
+    <Compile Include="Configs\UserConfig.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

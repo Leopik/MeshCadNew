@@ -8,7 +8,6 @@ namespace MeshCAD.Elements
 {
     public class Rod : BaseElement
     {
-        public int Number, Type;
         public Vertex[] Vertices;
         public Vertex OrientationVertice;
 
@@ -18,6 +17,16 @@ namespace MeshCAD.Elements
             Type = type;
             Vertices = vertices;
             OrientationVertice = orientationVertice;
+        }
+
+        public override string ToString()
+        {
+            return
+    $"Первый узел: №{Vertices[0].Number}\n" +
+    $"Второй узел: №{Vertices[1].Number}\n" +
+    $"Узел ориентации: №{OrientationVertice.Number}\n" +
+    $"Номер стержня: {Number}\n" +
+    $"Тип: {Type}\n";
         }
     }
 }
