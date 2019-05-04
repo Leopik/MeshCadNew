@@ -16,7 +16,7 @@ namespace MeshCAD.UIModels
 {
     public class RectangleUI : BelongingUIElement
     {
-        public const float EPS = 0.01f;
+        public static readonly Material RectangleBaseMaterial = MaterialHelper.CreateImageMaterial(MainWindow.ToBitmapImage(Properties.Resources.RectangleMaterial), 1);
         private double GetAngleABC(Point3D a, Point3D b, Point3D c)
         {
             double[] ab = { b.X - a.X, b.Y - a.Y, b.Z - a.Z };
@@ -33,9 +33,8 @@ namespace MeshCAD.UIModels
             return Math.Acos(res) * 180.0 / Math.PI;
         }
         Rectangle Rectangle;
-        public RectangleUI(Rectangle rectangle)
+        public RectangleUI(Rectangle rectangle) : base(rectangle)
         {
-            ModelElement = rectangle;
             Rectangle = rectangle;
             var rect = new RectangleVisual3D();
 
@@ -69,7 +68,7 @@ namespace MeshCAD.UIModels
             if (!(IsDoubleEqual(Vector3D.DotProduct(widthDirection, rect.LengthDirection), 0)
                 && IsDoubleEqual(Vector3D.DotProduct(rect.LengthDirection, lengthPoint - diagonalPoint), 0)
                 && IsDoubleEqual(Vector3D.DotProduct(widthDirection, widthPoint - diagonalPoint), 0)))
-                throw new Exception($"Прямоугольник №{rectangle.Number}: четыре точки №{rectangle.Vertices[0].Number}, " +
+                throw new NotRectangleException($"Прямоугольник №{rectangle.Number}: четыре точки №{rectangle.Vertices[0].Number}, " +
                     $"№{rectangle.Vertices[1].Number}, " +
                     $"№{rectangle.Vertices[2].Number}, " +
                     $"№{rectangle.Vertices[3].Number}, " +
@@ -83,11 +82,12 @@ namespace MeshCAD.UIModels
             rect.Width = basePoint.DistanceTo(widthPoint);
             rect.Length = basePoint.DistanceTo(lengthPoint);
             VisualElement = rect;
-            BaseMaterial = MaterialHelper.CreateMaterial((Color)ColorConverter.ConvertFromString(Colors[rectangle.BoardNumber]));
 
+            Material.Children.Add(RectangleBaseMaterial);
             Title = "Прямоугольник №" + rectangle.Number; 
         }
 
+        public const float EPS = 0.01f;
         public bool IsDoubleEqual(double a, double b)
         {
             return ((a - EPS < b) && (b < a + EPS)) ;

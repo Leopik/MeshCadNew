@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,101 +34,12 @@ namespace MeshCAD
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private Material SelectMaterial = MaterialHelper.CreateImageMaterial(@"E:\Downloads\Chrome\Excel.png");
-        public const float EPS = 0.01f;
-        private double GetAngleABC(Point3D a, Point3D b, Point3D c)
-        {
-            double[] ab = { b.X - a.X, b.Y - a.Y, b.Z - a.Z };
-            double[] bc = { c.X - b.X, c.Y - b.Y, c.Z - b.Z };
-
-            double abVec = Math.Pow(ab[0] * ab[0] + ab[1] * ab[1] + ab[2] * ab[2], 0.5);
-            double bcVec = Math.Pow(bc[0] * bc[0] + bc[1] * bc[1] + bc[2] * bc[2], 0.5);
-
-            double[] abNorm = { ab[0] / abVec, ab[1] / abVec, ab[2] / abVec };
-            double[] bcNorm = { bc[0] / bcVec, bc[1] / bcVec, bc[2] / bcVec };
-
-            double res = abNorm[0] * bcNorm[0] + abNorm[1] * bcNorm[1] + abNorm[2] * bcNorm[2];
-
-            return Math.Acos(res) * 180.0 / Math.PI;
-        }
-
-        public MainWindow()
-        {
-            InitializeComponent();
-
-            this.DataContext = this;
-            Model model;
-            using (StreamReader modelFile = new StreamReader(@"pros_plat.dar"))
-                model = new DarParser().Parse(modelFile);
-            DrawModel(model);
-
-            //var coor = new NewParser().Parse(@"E:\Dropbox\учебахуеба\диплом\progi\его прога\pros_pl1.dat");
-
-            //var hVp3D = new HelixViewport3D();
-            //var lights = new DefaultLights();
-            //for (int i = 0; i < coor.GetLength(1); i++)
-            //{
-            //    var sphere = new SphereVisual3D();
-            //    sphere.Radius = 10 / 10f;
-            //    sphere.Transform = new TranslateTransform3D(coor[0, i], coor[1, i], coor[2, i]);
-            //    hVp3D.Children.Add(sphere);
-            //}
-            //hVp3D.Children.Add(lights);
-            //AddChild(hVp3D);
-        }
         public ModelUI ModelUI;
-        private void DrawModel(Model model)
-        {
-            ModelUI = new ModelUI(model,
-                new MouseButtonEventHandler((obj, args) =>
-                {
-                    if (args.ChangedButton == MouseButton.Left) ShowElementControls((BaseUIElement)obj);
-                }));
-            foreach (var point in model.Vertices)
-            {
-                var vertex = new VertexUI(point.Value);
-                vertex.MouseDown += new MouseButtonEventHandler((obj, args) => {
-                    if (args.ChangedButton == MouseButton.Left) ShowElementControls((BaseUIElement)obj); });
-                ViewPort.Children.Add(vertex);
-                VertexTree.Items.Add(vertex);
-            }
-            foreach (var rectangle in model.Rectangles)
-            {
-                try
-                {
-                    var rectUI = new RectangleUI(rectangle.Value);
-               
-                    rectUI.MouseDown += new MouseButtonEventHandler((obj, args) => { if (args.ChangedButton == MouseButton.Left) ShowElementControls(rectUI); });
-                    ViewPort.Children.Add(rectUI);
-                    RectangleTree.Items.Add(rectUI);
-                }
-                catch (Exception e)
-                {
-                    MessageBoxResult result = MessageBox.Show(e.Message,
-                                          "Ошибка",
-                                          MessageBoxButton.OK,
-                                          MessageBoxImage.Error);
-                    
-                }
-            }
-            foreach (var triangle in model.Triangles)
-            {
-                var triangleUi = new TriangleUI(triangle.Value);
-                triangleUi.MouseDown += new MouseButtonEventHandler((obj, args) => { if (args.ChangedButton == MouseButton.Left) ShowElementControls(triangleUi); });
-                ViewPort.Children.Add(triangleUi);
-                TriangleTree.Items.Add(triangleUi);
+        private Material SelectMaterial = MaterialHelper.CreateImageMaterial(ToBitmapImage(Properties.Resources.SelectMaterial), 1);
 
-            }
-            foreach (var rod in model.Rods)
-            {
-                var rodUi = new RodUI(rod.Value);
-                rodUi.MouseDown += new MouseButtonEventHandler((obj, args) => { if (args.ChangedButton == MouseButton.Left) ShowElementControls(rodUi); });
-                ViewPort.Children.Add(rodUi);
-                RodTree.Items.Add(rodUi);
-            }
-        }
         private BaseUIElement currentChosenElement;
-        public BaseUIElement CurrentChosenElement {
+        public BaseUIElement CurrentChosenElement
+        {
             get { return currentChosenElement; }
             set
             {
@@ -135,7 +48,82 @@ namespace MeshCAD
             }
         }
 
+        private ClickMode currentSelectMode = ClickMode.SelectMode;
+        public ClickMode CurrentSelectMode
+        {
+            get { return currentSelectMode; }
+            set
+            {
+                currentSelectMode = value;
+                OnPropertyChanged("CurrentSelectMode");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            DataContext = this;
+            Model model;
+            using (StreamReader modelFile = new StreamReader(@"pros_plat.dar"))
+                model = new DarParser().Parse(modelFile);
+            DrawModel(model);
+        }
+        
+        private void DrawModel(Model model)
+        {
+            ModelUI = new ModelUI(model,
+                new MouseButtonEventHandler((obj, args) =>
+                {
+                    if (args.ChangedButton == MouseButton.Left) ShowElementControls((BaseUIElement)obj);
+                }));
+
+            VertexTree.UIElements = ModelUI.verticesUI.Values.Select(x => (BaseUIElement)x).ToList();
+            RectangleTree.UIElements = ModelUI.rectanglesUI.Values.Select(x => (BaseUIElement)x).ToList();
+            RodTree.UIElements = ModelUI.rodsUI.Values.Select(x => (BaseUIElement)x).ToList();
+            TriangleTree.UIElements = ModelUI.trianglesUI.Values.Select(x => (BaseUIElement)x).ToList();
+            LonelyTree.UIElements = ModelUI.lonelyElementsUI.Select(x => (BaseUIElement)x).ToList();
+            foreach (var vertex in ModelUI.verticesUI)
+            {
+                ViewPort.Children.Add(vertex.Value);
+            }
+            foreach (var rectangle in ModelUI.rectanglesUI)
+            {
+                ViewPort.Children.Add(rectangle.Value);
+            }
+            foreach (var rod in ModelUI.rodsUI)
+            {
+                ViewPort.Children.Add(rod.Value);
+            }
+            foreach (var triangle in ModelUI.trianglesUI)
+            {
+                ViewPort.Children.Add(triangle.Value);
+            }
+            foreach (var plate in ModelUI.platesUI)
+            {
+                var plateGroup = new GroupTreeViewItem()
+                {
+                    Title = "Пластина №" + plate.Key,
+                    UIElements = plate.Value.Select(x => (BaseUIElement)x).ToList()
+                };
+                StructureTree.Items.Add(plateGroup);
+            }
+            foreach (var board in ModelUI.boardsUI)
+            {
+                var boardGroup = new GroupTreeViewItem()
+                {
+                    Title = "Плата №" + board.Key,
+                    UIElements = board.Value.Select(x => (BaseUIElement)x).ToList()
+                };
+                StructureTree.Items.Add(boardGroup);
+            }
+
+            ElementTypeComboBox.ItemsSource = StructureTree.Items;
+
+        }
+
         public void OnPropertyChanged(string prop = "")
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -145,22 +133,12 @@ namespace MeshCAD
             }
         }
 
-
-        private ClickMode currentSelectMode = ClickMode.SelectMode;
-        public ClickMode CurrentSelectMode
-        {
-            get { return currentSelectMode; }
-            set { currentSelectMode = value;
-                OnPropertyChanged("CurrentSelectMode");
-            }
-        }
-
         private void ShowElementControls(BaseUIElement element)
         {
 
             if (CurrentChosenElement != null)
             {
-                CurrentChosenElement.Material = CurrentChosenElement.BaseMaterial;
+                CurrentChosenElement.Material.Children.Remove(SelectMaterial);
             }
 
             CurrentChosenElement = element;
@@ -171,12 +149,12 @@ namespace MeshCAD
                     CurrentChosenElement.IsShown = false;
                     break;
                 case ClickMode.SelectMode:
-                    CurrentChosenElement.Material = SelectMaterial;
+                    CurrentChosenElement.Material.Children.Add(SelectMaterial);
                     break;
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
             // Create OpenFileDialog 
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
@@ -186,7 +164,7 @@ namespace MeshCAD
             dlg.Filter = "DAR Files (*.dar)|*.dar|DAT Files (*.dat)|*.dat|All files (*.*)|*.*";
 
             // Display OpenFileDialog by calling ShowDialog method 
-            Nullable<bool> result = dlg.ShowDialog();
+            bool? result = dlg.ShowDialog();
 
             // Get the selected file name and display in a TextBox 
             if (result == true)
@@ -236,7 +214,8 @@ namespace MeshCAD
         {
             if (CurrentChosenElement == null)
                 return;
-            ViewPort.LookAt(CurrentChosenElement.FindBounds(CurrentChosenElement.Transform).Location, 1, 1000);
+            CurrentChosenElement.VisualElement.Transform;
+            ViewPort.LookAt(CurrentChosenElement.FindBounds(CurrentChosenElement.Transform).Location, 100, 1);
         }
 
         //allow only numbers into search box
@@ -264,6 +243,29 @@ namespace MeshCAD
             else
             {
                 e.CancelCommand();
+            }
+        }
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        public static BitmapImage ToBitmapImage(Bitmap bitmap)
+        {
+            using (var memory = new MemoryStream())
+            {
+                bitmap.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+
+                return bitmapImage;
             }
         }
     }

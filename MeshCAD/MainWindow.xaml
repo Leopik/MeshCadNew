@@ -25,7 +25,7 @@
         </Grid.ColumnDefinitions>
         <!--<StackPanel Height="401" VerticalAlignment="Top" Grid.Column="1" >-->
         <DockPanel LastChildFill="True" Grid.Column="1">
-            <Button DockPanel.Dock="Top" Content="Открыть файл" Click="Button_Click" Height="24"/>
+            <Button DockPanel.Dock="Top" Content="Открыть файл" Click="OpenFileButton_Click" Height="24"/>
             <ComboBox DockPanel.Dock="Top"
                       ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
                   SelectedItem="{Binding CurrentSelectMode}" />
@@ -35,21 +35,26 @@
                 <Button Content="Подсветить" Width="75" Click="HighlightElementClick"/>
             </WrapPanel>
             <TextBlock DockPanel.Dock="Top" x:Name="InfoBlock" TextWrapping="Wrap" Height="149" Text="{Binding CurrentChosenElement.ModelElement, UpdateSourceTrigger=PropertyChanged}"/>
-            <Label DockPanel.Dock="Top" Content="Поиск элемента" Height="25"/>
-            <WrapPanel DockPanel.Dock="Top"  Orientation="Horizontal">
-                <ComboBox />
-                <TextBox x:Name="SearchNumberTextBox" Text="TextBox" PreviewTextInput="SearchNumberTextBox_PreviewTextInput" DataObject.Pasting="SearchNumberTextBox_Pasting"/>
-                <Button Content="Поиск" Width="75"/>
+            <Label Visibility="Collapsed" DockPanel.Dock="Top" Content="Поиск элемента" Height="25"/>
+            <WrapPanel Visibility="Collapsed" DockPanel.Dock="Top"  Orientation="Horizontal">
+                <ComboBox x:Name="ElementTypeComboBox">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBox x:Name="SearchNumberTextBox" Text="0" PreviewTextInput="SearchNumberTextBox_PreviewTextInput" DataObject.Pasting="SearchNumberTextBox_Pasting"/>
+                <Button Content="Поиск" Width="75" Click="SearchButton_Click"/>
             </WrapPanel>
             <Label DockPanel.Dock="Top" Content="Структура" Height="25"/>
             <TreeView DockPanel.Dock="Bottom" x:Name="StructureTree">
-
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type trlocal:GroupTreeViewItem}">
+                    <HierarchicalDataTemplate DataType="{x:Type trlocal:GroupTreeViewItem}" ItemsSource="{Binding UIElements}">
                         <StackPanel Orientation="Horizontal">
-                            <CheckBox  />
-                            <Label Content="{Binding Title}"/>
-                        </StackPanel> 
+                            <CheckBox  IsChecked="{Binding IsShown}" IsThreeState="True"/>
+                            <TextBlock Text="{Binding Title}"/>
+                        </StackPanel>
                     </HierarchicalDataTemplate>
                     <DataTemplate DataType="{x:Type local:BaseUIElement}">
                         <StackPanel Orientation="Horizontal">
@@ -58,48 +63,22 @@
                         </StackPanel>
                     </DataTemplate>
                 </TreeView.Resources>
-                <!--<TreeView.Resources>
-                    <DataTemplate DataType="{x:Type local:BaseUIElement}">
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding IsShown}" />
-                            <Button Content="{Binding Title}" Click="StructureElementClick"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </TreeView.Resources>-->
-                <!--<TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding Path=Phones}">
-                        <StackPanel>
-                        <CheckBox />
-                        <TextBlock Text="{Binding Name}" />
-                        </StackPanel>
-                        <HierarchicalDataTemplate.ItemTemplate>
-                            <DataTemplate DataType="{x:Type local:BaseUIElement}">
-                                <StackPanel Orientation="Horizontal">
-                                    <CheckBox IsChecked="{Binding IsShown}" />
-                                    <Button Content="{Binding Title}" Click="StructureElementClick"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </HierarchicalDataTemplate.ItemTemplate>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>-->
-                <trlocal:GroupTreeViewItem Title="treet"/>
-                <TreeViewItem x:Name="RectangleTree"  Header="Прямоугольники" />
-                <TreeViewItem x:Name="VertexTree" Header="Узлы" />
-                <TreeViewItem x:Name="TriangleTree" Header="Треугольники" />
-                <TreeViewItem x:Name="RodTree" Header="Стержни" />
+
+                <trlocal:GroupTreeViewItem x:Name="RectangleTree"  Title="Прямоугольники" />
+                <trlocal:GroupTreeViewItem x:Name="VertexTree" Title="Узлы" />
+                <trlocal:GroupTreeViewItem x:Name="TriangleTree" Title="Треугольники" />
+                <trlocal:GroupTreeViewItem x:Name="RodTree" Title="Стержни" />
+                <trlocal:GroupTreeViewItem x:Name="LonelyTree" Title="Отдельные элементы" />
             </TreeView>
         </DockPanel>
-        <!--</StackPanel>-->
         <HelixToolkit:HelixViewport3D 
             Grid.Column="0" 
             x:Name="ViewPort" 
             ZoomExtentsWhenLoaded="True" 
             Background="LightGray" 
-            IsHeadLightEnabled="True" 
-            ZoomAroundMouseDownPoint="True" 
-            RotateAroundMouseDownPoint="True">
-
-            <!--<HelixToolkit:BoundingBoxVisual3D BoundingBox="{Binding SelectedObject, Converter={StaticResource BoundsConverter}}" Diameter="0.2"/>-->
+            IsHeadLightEnabled="True"
+            ZoomAroundMouseDownPoint="False" 
+            RotateAroundMouseDownPoint="False">
         </HelixToolkit:HelixViewport3D>
 
     </Grid>

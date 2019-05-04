@@ -19,34 +19,45 @@ namespace MeshCAD.UIModels
         private Material BindVertexMaterial = MaterialHelper.CreateMaterial(Brushes.Yellow);
         private Material ControlVertexMaterial = MaterialHelper.CreateMaterial(Brushes.Green);
         private Material MassVertexMaterial = MaterialHelper.CreateMaterial(Brushes.Violet);
+        private Material UnknownVertexMaterial = MaterialHelper.CreateMaterial(Brushes.Gainsboro);
 
         public Vertex Vertex;
-        public VertexUI(Vertex vertex)
+        public VertexUI(Vertex vertex) : base(vertex)
         {
-            ModelElement = vertex;
             Vertex = vertex;
             var sphere = new SphereVisual3D();
 
             sphere.Model.Material = MaterialHelper.CreateMaterial(Color.FromRgb(255, 0, 0));
             sphere.Center = vertex.Point.Multiply(SCALE_FACTOR);
+            sphere.Radius = sphere.Radius * 0.5;
 
             VisualElement = sphere;
 
+            Material colorMaterial;
             switch(vertex.Type)
             {
                 case 0:
-                    BaseMaterial = DefaultVertexMaterial;
+                    colorMaterial = DefaultVertexMaterial;
                     break;
                 case 1:
-                    BaseMaterial = BindVertexMaterial;
+                    colorMaterial = BindVertexMaterial;
                     break;
                 case 2:
-                    BaseMaterial = ControlVertexMaterial;
+                    colorMaterial = ControlVertexMaterial;
                     break;
                 case 3:
-                    BaseMaterial = MassVertexMaterial;
+                    colorMaterial = MassVertexMaterial;
                     break;
+                default:
+                    colorMaterial = UnknownVertexMaterial;
+                    break;
+
             }
+
+            
+            var groupMaterial = new MaterialGroup();
+            groupMaterial.Children.Add(colorMaterial);
+            Material = groupMaterial;
 
             Title = "Узел №" + vertex.Number;
         }

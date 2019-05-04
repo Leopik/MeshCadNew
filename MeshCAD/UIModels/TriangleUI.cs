@@ -13,15 +13,16 @@ namespace MeshCAD.UIModels
 {
     public class TriangleUI : BelongingUIElement
     {
-        public TriangleUI(Elements.Triangle triangle)
+        public TriangleUI(Elements.Triangle triangle) : base(triangle)
         {
-            ModelElement = triangle;
             var trinagleVisual = new TriangleVisual3D();
             trinagleVisual.FirstPoint = triangle.Vertices[0].Point.Multiply(SCALE_FACTOR);
             trinagleVisual.SecondPoint = triangle.Vertices[1].Point.Multiply(SCALE_FACTOR);
             trinagleVisual.ThirdPoint = triangle.Vertices[2].Point.Multiply(SCALE_FACTOR);
             VisualElement = trinagleVisual;
-            BaseMaterial = MaterialHelper.CreateMaterial((Color)ColorConverter.ConvertFromString(Colors[triangle.BoardNumber]));
+
+            //Material.Children.Add(colorMaterial);
+
             Title = "Треугольник №" + triangle.Number;
             //(triangle.Vertices[0].Point, triangle.Vertices[0].Point, triangle.Vertices[2].Point)
         }
