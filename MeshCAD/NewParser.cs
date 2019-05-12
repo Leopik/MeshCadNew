@@ -635,7 +635,7 @@ namespace MeshCAD
                     }
 
             //SAVE
-                    StreamWriter mshFile = new StreamWriter(@"E:\Dropbox\учебахуеба\диплом\progi\его прога\new_my.msh");
+                    StreamWriter mshFile = new StreamWriter(@"E:\new_my.msh");
             var st3 = "$MeshFormat";
             mshFile.WriteLine(st3);
             mshFile.WriteLine("2.0" + " " + 0 + " " + 8);

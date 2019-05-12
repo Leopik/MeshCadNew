@@ -34,7 +34,7 @@
                 <CheckBox Content="Показывать" IsChecked="{Binding CurrentChosenElement.IsShown}"/>
                 <Button Content="Подсветить" Width="75" Click="HighlightElementClick"/>
             </WrapPanel>
-            <TextBlock DockPanel.Dock="Top" x:Name="InfoBlock" TextWrapping="Wrap" Height="149" Text="{Binding CurrentChosenElement.ModelElement, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock DockPanel.Dock="Top" x:Name="InfoBlock" TextWrapping="Wrap" Height="200" Text="{Binding CurrentChosenElement.ModelElement, UpdateSourceTrigger=PropertyChanged}"/>
             <Label Visibility="Collapsed" DockPanel.Dock="Top" Content="Поиск элемента" Height="25"/>
             <WrapPanel Visibility="Collapsed" DockPanel.Dock="Top"  Orientation="Horizontal">
                 <ComboBox x:Name="ElementTypeComboBox">
@@ -76,9 +76,10 @@
             x:Name="ViewPort" 
             ZoomExtentsWhenLoaded="True" 
             Background="LightGray" 
-            IsHeadLightEnabled="True"
+            
             ZoomAroundMouseDownPoint="False" 
             RotateAroundMouseDownPoint="False">
+            <HelixToolkit:SunLight />
         </HelixToolkit:HelixViewport3D>
 
     </Grid>

@@ -21,11 +21,11 @@ namespace MeshCAD.Elements
 
         public override string ToString()
         {
-            return
+            return $"Стержень №{Number}\n" +
     $"Первый узел: №{Vertices[0].Number}\n" +
     $"Второй узел: №{Vertices[1].Number}\n" +
     $"Узел ориентации: №{OrientationVertice.Number}\n" +
-    $"Номер стержня: {Number}\n" +
+    //$"Номер стержня: {Number}\n" +
     $"Тип: {Type}\n";
         }
     }

@@ -17,7 +17,7 @@ namespace MeshCAD.UIModels
         public Dictionary<int, List<BelongingUIElement>> boardsUI = new Dictionary<int, List<BelongingUIElement>>();
         public Dictionary<int, List<BelongingUIElement>> platesUI = new Dictionary<int, List<BelongingUIElement>>();
         public List<BelongingUIElement> lonelyElementsUI = new List<BelongingUIElement>();
-        public List<Exception> modelExceptions = new List<Exception>();
+        public List<NotRectangleException> modelExceptions = new List<NotRectangleException>();
 
         public ModelUI(Model model, MouseButtonEventHandler mouseButtonEventHandler)
         {
@@ -42,7 +42,7 @@ namespace MeshCAD.UIModels
                     rectanglesUI[rectangle.Key] = rectangleUI;
                     GroupToDicts(rectangleUI);
                 }
-                catch (Exception e)
+                catch (NotRectangleException e)
                 {
                     modelExceptions.Add(e);
                 }

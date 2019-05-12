@@ -72,11 +72,12 @@ namespace MeshCAD.Elements
                     break;
             }
 
-            return $"Координаты:\n" +
+            return $"Узел №{Number}\n" +
+                $"Координаты:\n" +
                 $"X: {Point.X}\n" +
                 $"Y: {Point.Y}\n" +
                 $"Z: {Point.Z}\n" +
-                $"Номер: {Number}\n" +
+                //$"Номер: {Number}\n" +
                 $"Тип: {typeStr}\n" +
                 $"Принадлежность узла: {belongStr}\n";
         }

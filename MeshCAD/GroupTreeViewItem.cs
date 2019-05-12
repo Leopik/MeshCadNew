@@ -1,6 +1,7 @@
 ﻿using MeshCAD.UIModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -11,12 +12,14 @@ namespace MeshCAD
     public class GroupTreeViewItem : INotifyPropertyChanged
     {
         public string Title { get; set; }
-        public List<BaseUIElement> UIElements { get; set; }
+        public ObservableCollection<BaseUIElement> UIElements { get; set; } = new ObservableCollection<BaseUIElement>();
 
         public bool? IsShown
         {
             get
             {
+                if (UIElements == null || UIElements.Count == 0)
+                    return false;
                 if (UIElements.All(x => x.IsShown))
                     return true;
                 if (UIElements.Any(x => x.IsShown))

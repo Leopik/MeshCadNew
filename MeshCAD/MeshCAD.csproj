@@ -102,6 +102,7 @@
     <Compile Include="Elements\Vertex.cs" />
     <Compile Include="GroupTreeViewItem.cs" />
     <Compile Include="NotRectangleException.cs" />
+    <Compile Include="SingleTreeViewItem.cs" />
     <Compile Include="UIModels\BaseUIElement.cs" />
     <Compile Include="UIModels\BelongingUIElement.cs" />
     <Compile Include="UIModels\ModelUI.cs" />

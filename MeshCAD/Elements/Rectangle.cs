@@ -21,12 +21,12 @@ namespace MeshCAD.Elements
 
         public override string ToString()
         {
-            return
+            return $"Прямоугольник №{Number}\n" +
                 $"Первый узел: №{Vertices[0].Number}\n" +
                 $"Второй узел: №{Vertices[1].Number}\n" +
                 $"Третий узел: №{Vertices[2].Number}\n" +
                 $"Четвертый узел: №{Vertices[3].Number}\n" +
-                $"Номер прямоугольника: {Number}\n" +
+                //$"Номер прямоугольника: {Number}\n" +
                 $"Тип: {Type}\n" +
                 (IsLonely ? "Отдельный прямоугольник\n" : "") +
                 $"№ пластины с фиксированным шагом сетки: {FixPlateNumber}\n" +

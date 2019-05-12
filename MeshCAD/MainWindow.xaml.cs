@@ -66,10 +66,16 @@ namespace MeshCAD
             InitializeComponent();
 
             DataContext = this;
-            Model model;
-            using (StreamReader modelFile = new StreamReader(@"pros_plat.dar"))
-                model = new DarParser().Parse(modelFile);
-            DrawModel(model);
+            try
+            {
+                //Model model;
+                //using (StreamReader modelFile = new StreamReader(@"pros_plat.dar"))
+                //    model = new DarParser().Parse(modelFile);
+                //DrawModel(model);
+            }catch (Exception e)
+            {
+
+            }
         }
         
         private void DrawModel(Model model)
@@ -80,11 +86,30 @@ namespace MeshCAD
                     if (args.ChangedButton == MouseButton.Left) ShowElementControls((BaseUIElement)obj);
                 }));
 
-            VertexTree.UIElements = ModelUI.verticesUI.Values.Select(x => (BaseUIElement)x).ToList();
-            RectangleTree.UIElements = ModelUI.rectanglesUI.Values.Select(x => (BaseUIElement)x).ToList();
-            RodTree.UIElements = ModelUI.rodsUI.Values.Select(x => (BaseUIElement)x).ToList();
-            TriangleTree.UIElements = ModelUI.trianglesUI.Values.Select(x => (BaseUIElement)x).ToList();
-            LonelyTree.UIElements = ModelUI.lonelyElementsUI.Select(x => (BaseUIElement)x).ToList();
+            VertexTree.UIElements.Clear();
+
+            foreach (var ver in ModelUI.verticesUI.Values)
+                VertexTree.UIElements.Add(ver);
+            RectangleTree.UIElements.Clear();
+            
+            foreach (var rec in ModelUI.rectanglesUI.Values)
+                RectangleTree.UIElements.Add(rec);
+            RodTree.UIElements.Clear();
+            
+            foreach (var rod in ModelUI.rodsUI.Values)
+                RodTree.UIElements.Add(rod);
+            TriangleTree.UIElements.Clear();
+            
+            foreach (var tri in ModelUI.trianglesUI.Values)
+                TriangleTree.UIElements.Add(tri);
+            //VertexTree.UIElements = ModelUI.verticesUI.Values.Select(x => (BaseUIElement)x).ToList();
+            //RectangleTree.UIElements = ModelUI.rectanglesUI.Values.Select(x => (BaseUIElement)x).ToList();
+            //RodTree.UIElements = ModelUI.rodsUI.Values.Select(x => (BaseUIElement)x).ToList();
+            //TriangleTree.UIElements = ModelUI.trianglesUI.Values.Select(x => (BaseUIElement)x).ToList();
+            LonelyTree.UIElements.Clear();
+            
+            foreach (var lonely in ModelUI.lonelyElementsUI)
+                LonelyTree.UIElements.Add(lonely);
             foreach (var vertex in ModelUI.verticesUI)
             {
                 ViewPort.Children.Add(vertex.Value);
@@ -106,7 +131,7 @@ namespace MeshCAD
                 var plateGroup = new GroupTreeViewItem()
                 {
                     Title = "Пластина №" + plate.Key,
-                    UIElements = plate.Value.Select(x => (BaseUIElement)x).ToList()
+                    UIElements = new System.Collections.ObjectModel.ObservableCollection<BaseUIElement>(plate.Value.Select(x => (BaseUIElement)x))
                 };
                 StructureTree.Items.Add(plateGroup);
             }
@@ -115,11 +140,15 @@ namespace MeshCAD
                 var boardGroup = new GroupTreeViewItem()
                 {
                     Title = "Плата №" + board.Key,
-                    UIElements = board.Value.Select(x => (BaseUIElement)x).ToList()
+                    UIElements = new System.Collections.ObjectModel.ObservableCollection<BaseUIElement>(board.Value.Select(x => (BaseUIElement)x))
                 };
                 StructureTree.Items.Add(boardGroup);
             }
-
+            TriangleTree.IsShown = true;
+            VertexTree.IsShown = true;
+            RectangleTree.IsShown = true;
+            LonelyTree.IsShown = true;
+            RodTree.IsShown = true;
             ElementTypeComboBox.ItemsSource = StructureTree.Items;
 
         }
@@ -184,8 +213,9 @@ namespace MeshCAD
                 if (fileExtension == ".dar")
                 {
                     Model model;
-                    using (StreamReader modelFile = new StreamReader(@"pros_plat.dar"))
+                    using (StreamReader modelFile = new StreamReader(fileName))
                         model = new DarParser().Parse(modelFile);
+                    DrawModel(model);
 
                 }
                 else if (fileExtension == ".dat")
@@ -214,7 +244,7 @@ namespace MeshCAD
         {
             if (CurrentChosenElement == null)
                 return;
-            CurrentChosenElement.VisualElement.Transform;
+            
             ViewPort.LookAt(CurrentChosenElement.FindBounds(CurrentChosenElement.Transform).Location, 100, 1);
         }
 

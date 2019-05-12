@@ -19,9 +19,10 @@ namespace MeshCAD.UIModels
         public BelongingUIElement(BelongingElement belongingElement) :base(belongingElement)
         {
             BelongingElement = belongingElement;
-            if (!BoardMaterials.ContainsKey(belongingElement.BoardNumber))
-                BoardMaterials[belongingElement.BoardNumber] = MaterialHelper.CreateMaterial((Color)ColorConverter.ConvertFromString(Colors[belongingElement.BoardNumber]));
-            Material.Children.Add(BoardMaterials[belongingElement.BoardNumber]);
+            var key = belongingElement.BoardNumber == 0 ? belongingElement.FixPlateNumber * 2 : (belongingElement.BoardNumber * 2 - 1);
+            if (!BoardMaterials.ContainsKey(key))
+                BoardMaterials[key] = MaterialHelper.CreateMaterial((Color)ColorConverter.ConvertFromString(Colors[key]));
+            Material.Children.Add(BoardMaterials[key]);
         }
     }
 }
